@@ -28,6 +28,11 @@ def objective(x):
         cost for x
     """
     # FILL in your code here
+    s = 0
+    n = fk(x, link_lengths)
+    s = p_d-n
+    c = np.power(np.dot(s,s), 0.5)/2
+    return c
 
 def solve_ik(obj, q0, bnds):
     """
@@ -63,6 +68,7 @@ def plot_solution(x):
     :param x: solution state as a vector of joint angles
     :returns: None
     """
+    print(np.shape(x),x)
     fig = plt.figure()
     ax = fig.gca(projection='3d')
     ax.set_xlabel('X')
@@ -77,6 +83,8 @@ def plot_solution(x):
 
     # plot robot
     points1 = fk(x[:1], link_lengths[:1])
+    print(points1)
+
     plt.plot([0, points1[0]], [0, points1[1]], [0, points1[2]], color='k')
     for pp in range(1, len(x)):
        points0 = fk(x[:pp], link_lengths[:pp])
