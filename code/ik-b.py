@@ -19,7 +19,7 @@ obstacle_center = np.array([0.6, 0.5, 0])
 obstacle_radius = 0.2
 
 # initial state (in configuration space)
-q0 = np.array([0, 0, 1.86])
+q0 = np.array([0.0, 0.0, 1.86])
 
 # goal state (in task space)
 p_d  = np.array([0.1, 1.33, 0])
@@ -34,6 +34,11 @@ def objective(x):
         cost for x
     """
     # FILL in your code here
+    s = 0
+    n = fk(x, link_lengths)
+    s = n - p_d
+    c = np.power(np.dot(s,s), 0.5)* 0.5
+    return c
 
 def constraint1(x):
     """
@@ -47,6 +52,10 @@ def constraint1(x):
     :returns: constraint output as a scalar value of type np.float64
     """
     # FILL in your code here
+    line_start = np.array([0, 0, 0])
+    line_end = fk(np.array([x[0]]), np.array([link_lengths[0]]))
+    d = line_sphere_intersection(line_start, line_end, obstacle_center, obstacle_radius)
+    return d
 
 def constraint2(x):
     """
@@ -60,6 +69,10 @@ def constraint2(x):
     :returns: constraint output as a scalar value of type np.float64
     """
     # FILL in your code here
+    line_start = fk(np.array([x[0]]), np.array([link_lengths[0]]))
+    line_end = fk(np.array([x[0], x[1]]), np.array([link_lengths[0], link_lengths[1]]))
+    d = line_sphere_intersection(line_start, line_end, obstacle_center, obstacle_radius)
+    return d
 
 def constraint3(x):
     """
@@ -73,6 +86,10 @@ def constraint3(x):
     :returns: constraint output as a scalar value of type np.float64
     """
     # FILL in your code here
+    line_start = fk(np.array([x[0], x[1]]), np.array([link_lengths[0], link_lengths[1]]))
+    line_end = fk(x, link_lengths)
+    d = line_sphere_intersection(line_start, line_end, obstacle_center, obstacle_radius)
+    return d
 
 # build constraints
 con1 = {'type': 'ineq', 'fun': constraint1}
