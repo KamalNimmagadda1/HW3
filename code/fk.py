@@ -1,5 +1,10 @@
 import numpy as np
 
+def matricize(t,r):
+    c = np.cos(t)
+    s = np.sin(t)
+    T = np.array([[c, -s, 0, (r*c)], [s, c, 0, (r*s)], [0, 0, 1, 0], [0, 0, 0, 1]])
+    return T
 
 def fk(angles, link_lengths):
     """
@@ -21,6 +26,13 @@ def fk(angles, link_lengths):
         np.float64
     """
     # FILL in your code here
+    P = np.eye(4)
+    angle = 0
+    for i in range(len(link_lengths)):
+	T = matricize(angles[i], link_lengths[i])
+	P = np.dot(P,T)
+    pos = np.array([P[0][3],P[1][3],P[2][3]])
+    return pos
 
 if __name__ == '__main__':
     np.set_printoptions(suppress=True)
